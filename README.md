@@ -1,0 +1,2 @@
+# MEGANEsModule
+Chattriggers module
