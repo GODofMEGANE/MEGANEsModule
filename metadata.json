@@ -1,0 +1,8 @@
+{
+  "name": "MEGANEsModule",
+  "creator": "MEGANE",
+  "description": "for QoL",
+  "version": "1.0.0",
+  "entry": "index.js",
+  "requires": ["Amaterasu", "BeaconBeam"]
+}  
