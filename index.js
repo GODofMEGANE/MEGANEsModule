@@ -233,6 +233,7 @@ register('renderWorld', () => {
         World.getAllEntities().filter(entity => {
             return /^§5\[§dLv\d+§5\] §c§5.+?§r §d[\d,kM]+§f\/§5[\d,kM]+§c❤$/.test(entity.getName());
         }).forEach(entity => {
+            renderBeaconBeam(entity.getX(), 0, entity.getZ(), 1, 0.25, 1, 1, false, 300);
             renderBeaconBeam(entity.getX(), entity.getY(), entity.getZ(), 1, 0.5, 1, 1, false, 300);
         });
     }
