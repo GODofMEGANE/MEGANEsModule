@@ -1,6 +1,11 @@
 import settings from "./gui.js";
 import renderBeaconBeam from "../BeaconBeam/index.js";
 
+let S03PacketTimeUpdate = Java.type("net.minecraft.network.play.server.S03PacketTimeUpdate");
+let S37PacketStatistics = Java.type("net.minecraft.network.play.server.S37PacketStatistics");
+let C16PacketClientStatus = Java.type("net.minecraft.network.play.client.C16PacketClientStatus");
+let S01PacketJoinGame = Java.type("net.minecraft.network.play.server.S01PacketJoinGame");
+
 // ----- Custom Music -----
 const CUSTOM_MUSIC_LIST = [
     /*{
@@ -127,6 +132,16 @@ register("chat", (rank, name, message) => {
             ChatLib.command(`p setting allinvite`);
         }
     }
+    if (settings().enableShowTPS) {
+        if (message.toLowerCase().endsWith(`!tps`)) {
+            ChatLib.command(`p TPS: ${tps.toFixed(2)}[ticks/s]`);
+        }
+    }
+    if (settings().enableShowPing) {
+        if (message.toLowerCase().endsWith(`!ping`)) {
+            ChatLib.command(`p Ping: ${ping.toFixed(0)}[ms]`);
+        }
+    }
     if (settings().enableDice) {
         if (message.toLowerCase().match(/!\d+d\d+$/)) {
             let [count, sides] = message.match(/\d+/g).map(Number);
@@ -177,6 +192,47 @@ register("chat", (rank, name, message) => {
         ChatLib.command(`p ${name}`);
     }
 }).setCriteria("&dFrom ${rank} ${name}&r&7: &r&7${message}&r");
+
+// !tps
+let tps = 20;
+register("command", (args) => {
+    if (settings().enableShowTPS) {
+        ChatLib.chat(`TPS: ${tps.toFixed(2)}[ticks/s]`);
+    }
+}).setName("megtps");
+
+let last_packet_time = 0;
+register("packetReceived", () => {
+    if (settings().enableShowTPS) {
+        let now_packet_time = Date.now();
+        tps = Math.min(20000 / (now_packet_time - last_packet_time), 20);
+        last_packet_time = now_packet_time;
+    }
+}).setFilteredClass(S03PacketTimeUpdate);
+
+// !ping
+let ping = 0;
+register("command", (args) => {
+    if (settings().enableShowPing) {
+        ChatLib.chat(`Ping: ${ping.toFixed(0)}[ms]`);
+    }
+}).setName("megping");
+
+let last_ping_time = -1;
+register("step", () => {
+    if(settings().enableShowPing && last_ping_time === -1){
+        Client.sendPacket(new C16PacketClientStatus(
+            C16PacketClientStatus.EnumState.REQUEST_STATS
+        ));
+        last_ping_time = Date.now();
+    }
+}).setDelay(3);
+register("packetReceived", () => {
+    if(settings().enableShowPing && last_ping_time !== -1){
+        ping = Math.abs(Date.now() - last_ping_time);
+        last_ping_time = -1;
+    }
+}).setFilteredClasses([S01PacketJoinGame, S37PacketStatistics]);
 
 // ----- SB Miscs -----
 // Warp to trapper
@@ -233,7 +289,7 @@ register('renderWorld', () => {
         World.getAllEntities().filter(entity => {
             return /^§5\[§dLv\d+§5\] §c§5.+?§r §d[\d,kM]+§f\/§5[\d,kM]+§c❤$/.test(entity.getName());
         }).forEach(entity => {
-            renderBeaconBeam(entity.getX(), 0, entity.getZ(), 1, 0.25, 1, 1, false, 300);
+            renderBeaconBeam(entity.getX(), 0, entity.getZ(), 0.5, 0, 0.5, 1, false, 300);
             renderBeaconBeam(entity.getX(), entity.getY(), entity.getZ(), 1, 0.5, 1, 1, false, 300);
         });
     }
@@ -350,6 +406,8 @@ register('renderOverlay', () => {
             let spring_timer = Infinity;
             World.getAllEntities().filter(entity => {
                 return /^§c§lBOOM §a(\d+(\.\d+)?)s$/.test(entity.getName());
+            }).filter(entity => {
+                return (Math.pow(entity.getX()-Player.getX(), 2)+Math.pow(entity.getY()-Player.getY(), 2)+Math.pow(entity.getZ()-Player.getZ(), 2)) < Math.pow(20, 2);
             }).forEach(entity => {
                 let timer = Number(entity.getName().match(/^§c§lBOOM §a(\d+(\.\d+)?)s$/)[1]);
                 if (timer < spring_timer) {

@@ -44,6 +44,16 @@
             },
             {
                 "type": 6,
+                "name": "enableShowTPS",
+                "value": true
+            },
+            {
+                "type": 6,
+                "name": "enableShowPing",
+                "value": true
+            },
+            {
+                "type": 6,
                 "name": "enableDice",
                 "value": true
             }

@@ -40,6 +40,16 @@ default_config.addSwitch({
     description: "Send \'!allinvite\' in party chat to enable all invite",
 }).addSwitch({
     category: null,
+    configName: "enableShowTPS",
+    title: "Enable tps command",
+    description: "Send \'!tps\' in party chat to show TPS",
+}).addSwitch({
+    category: null,
+    configName: "enableShowPing",
+    title: "Enable ping command",
+    description: "Send \'!ping\' in party chat to show Ping",
+}).addSwitch({
+    category: null,
     configName: "enableDice",
     title: "Enable dice commands",
     description: "Send \'!1d100\' in party chat to cast dices",
