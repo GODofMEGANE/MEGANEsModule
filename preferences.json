@@ -60,6 +60,16 @@
         ]
     },
     {
+        "category": "Dungeons",
+        "settings": [
+            {
+                "type": 6,
+                "name": "enableAllyHpWarn",
+                "value": true
+            }
+        ]
+    },
+    {
         "category": "Rift",
         "settings": [
             {
@@ -95,6 +105,11 @@
             {
                 "type": 6,
                 "name": "enableRunicHighlight",
+                "value": true
+            },
+            {
+                "type": 6,
+                "name": "enableServerMemories",
                 "value": true
             }
         ]

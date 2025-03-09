@@ -134,12 +134,12 @@ register("chat", (rank, name, message) => {
     }
     if (settings().enableShowTPS) {
         if (message.toLowerCase().endsWith(`!tps`)) {
-            ChatLib.command(`p TPS: ${tps.toFixed(2)}[ticks/s]`);
+            ChatLib.command(`pchat TPS: ${tps.toFixed(2)}[ticks/s]`);
         }
     }
     if (settings().enableShowPing) {
         if (message.toLowerCase().endsWith(`!ping`)) {
-            ChatLib.command(`p Ping: ${ping.toFixed(0)}[ms]`);
+            ChatLib.command(`pchat Ping: ${ping.toFixed(0)}[ms]`);
         }
     }
     if (settings().enableDice) {
@@ -234,6 +234,18 @@ register("packetReceived", () => {
     }
 }).setFilteredClasses([S01PacketJoinGame, S37PacketStatistics]);
 
+// ----- Dungeons -----
+// Ally Hp Warn
+register("step", () => {
+    if(settings().enableAllyHpWarn){
+        let sc_lines = Scoreboard.getLines();
+        let matched = sc_lines.find(sc_line => /^§e\[[ABHMT]\] §b\S §c[\d,]+$/.test(sc_line.toString()));
+        if(matched){
+            Client.showTitle("§cLow HP!", `§b${matched.toString().match(/^§e\[[ABHMT]\] §b\S §c[\d,]+$/)[1]}`, 0, 50, 10);
+        }
+    }
+});
+
 // ----- SB Miscs -----
 // Warp to trapper
 register("chat", () => {
@@ -284,6 +296,7 @@ register("worldLoad", () => {
     invincible_ticks = 0;
 });
 
+// Runic Highlight
 register('renderWorld', () => {
     if (settings().enableRunicHighlight) {
         World.getAllEntities().filter(entity => {
@@ -294,6 +307,21 @@ register('renderWorld', () => {
         });
     }
 });
+
+// Server Memories
+let servers = [];
+register("chat", (server) => {
+    if (settings().enableServerMemories) {
+        servers.push({"server" : server, "time" : Date.now()});
+        for(let index = servers.length-1; index >= 0; index--){
+            if(servers[index].time < Date.now() - 20*60*1000){
+                servers.splice(index, 1);
+            }
+        }
+        let count = servers.filter((history) => server === history.server).length;
+        ChatLib.chat(`${(count==1)?"§7":"§e"}Visited this server: ${count}`);
+    }
+}).setCriteria("&7Sending to server ${server}...&r");
 
 // ----- Developments -----
 register("command", (args) => {

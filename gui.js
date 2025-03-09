@@ -54,6 +54,11 @@ default_config.addSwitch({
     title: "Enable dice commands",
     description: "Send \'!1d100\' in party chat to cast dices",
 }).addSwitch({
+    category: "Dungeons",
+    configName: "enableAllyHpWarn",
+    title: "Enable Ally HP Warn",
+    description: "Enable warning when ally's hp is low",
+}).addSwitch({
     category: "Rift",
     configName: "enableBeaconOnEffigies",
     title: "Enable beacon on effigies",
@@ -83,6 +88,11 @@ default_config.addSwitch({
     configName: "enableRunicHighlight",
     title: "Enable Highlight Runic mobs",
     description: "Highlight Runic mobs",
+}).addSwitch({
+    category: null,
+    configName: "enableServerMemories",
+    title: "Enable Server Visited Count",
+    description: "Enable show visited count of current server",
 }).addSwitch({
     category: "Developments",
     configName: "enableShowScoreCommand",
