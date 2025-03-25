@@ -239,9 +239,9 @@ register("packetReceived", () => {
 register("step", () => {
     if(settings().enableAllyHpWarn){
         let sc_lines = Scoreboard.getLines();
-        let matched = sc_lines.find(sc_line => /^§e\[[ABHMT]\] §b\S §c[\d,]+$/.test(sc_line.toString()));
+        let matched = sc_lines.find(sc_line => /^§e\[[ABHMT]\] \S+ §c(?!DEAD$)\S+$/.test(sc_line.toString()));
         if(matched){
-            Client.showTitle("§cLow HP!", `§b${matched.toString().match(/^§e\[[ABHMT]\] §b\S §c[\d,]+$/)[1]}`, 0, 50, 10);
+            Client.showTitle("§cLow HP!", `§b${matched.toString().match(/^§e\[[ABHMT]\] (\S+) §c\S+$/)[1]}`, 0, 50, 10);
         }
     }
 });
@@ -299,7 +299,10 @@ register("worldLoad", () => {
 // Runic Highlight
 register('renderWorld', () => {
     if (settings().enableRunicHighlight) {
+        let in_catacombs = Scoreboard.getLines().some(text => text.toString().replace(/§./g, '').replace(/[^a-zA-Z0-9]/g, '').includes("Catacombs"));
+        console.log(`in_catacombs: ${in_catacombs}`);
         World.getAllEntities().filter(entity => {
+            if(in_catacombs) return entity.getName().startsWith("§c§5") || entity.getName().startsWith("§6✯ §c§5") || /^§5\[§dLv\d+§5\] §c§5.+?§r §d[\d,kM]+§f\/§5[\d,kM]+§c❤$/.test(entity.getName());
             return /^§5\[§dLv\d+§5\] §c§5.+?§r §d[\d,kM]+§f\/§5[\d,kM]+§c❤$/.test(entity.getName());
         }).forEach(entity => {
             renderBeaconBeam(entity.getX(), 0, entity.getZ(), 0.5, 0, 0.5, 1, false, 300);
