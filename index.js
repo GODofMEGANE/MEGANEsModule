@@ -302,8 +302,7 @@ register('renderWorld', () => {
         let in_catacombs = Scoreboard.getLines().some(text => text.toString().replace(/§./g, '').replace(/[^a-zA-Z0-9]/g, '').includes("Catacombs"));
         console.log(`in_catacombs: ${in_catacombs}`);
         World.getAllEntities().filter(entity => {
-            if(in_catacombs) return entity.getName().startsWith("§c§5") || entity.getName().startsWith("§6✯ §c§5") || /^§5\[§dLv\d+§5\] §c§5.+?§r §d[\d,kM]+§f\/§5[\d,kM]+§c❤$/.test(entity.getName());
-            return /^§5\[§dLv\d+§5\] §c§5.+?§r §d[\d,kM]+§f\/§5[\d,kM]+§c❤$/.test(entity.getName());
+            return (in_catacombs && (entity.getName().startsWith("§c§5") || entity.getName().startsWith("§6✯ §c§5"))) || /^§5\[§dLv\d+§5\] §c§5(.+ )?§d[\d,\.kMB]+§f\/§5[\d,\.kMB]+§c❤$/.test(entity.getName());
         }).forEach(entity => {
             renderBeaconBeam(entity.getX(), 0, entity.getZ(), 0.5, 0, 0.5, 1, false, 300);
             renderBeaconBeam(entity.getX(), entity.getY(), entity.getZ(), 1, 0.5, 1, 1, false, 300);
