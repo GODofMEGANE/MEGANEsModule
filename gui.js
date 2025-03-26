@@ -94,10 +94,20 @@ default_config.addSwitch({
     title: "Enable Server Visited Count",
     description: "Enable show visited count of current server",
 }).addSwitch({
+    category: null,
+    configName: "enableManiacMinerNotice",
+    title: "Enable Maniac Miner notification",
+    description: "Enable notification when Maniac Miner is fully charged",
+}).addSwitch({
     category: "Developments",
     configName: "enableShowScoreCommand",
     title: "Enable /megsc",
-    description: "/megsc to copy scoreboard's valuel",
+    description: "/megsc to copy scoreboard's value",
+}).addSwitch({
+    category: null,
+    configName: "enableShowTablistCommand",
+    title: "Enable /megtab",
+    description: "/megtab to copy tablist's value",
 })
 
 const config = new Settings("MEGANEsModule", default_config).setCommand('meg');

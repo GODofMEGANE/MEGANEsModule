@@ -300,13 +300,52 @@ register("worldLoad", () => {
 register('renderWorld', () => {
     if (settings().enableRunicHighlight) {
         let in_catacombs = Scoreboard.getLines().some(text => text.toString().replace(/§./g, '').replace(/[^a-zA-Z0-9]/g, '').includes("Catacombs"));
-        console.log(`in_catacombs: ${in_catacombs}`);
         World.getAllEntities().filter(entity => {
             return (in_catacombs && (entity.getName().startsWith("§c§5") || entity.getName().startsWith("§6✯ §c§5"))) || /^§5\[§dLv\d+§5\] §c§5(.+ )?§d[\d,\.kMB]+§f\/§5[\d,\.kMB]+§c❤$/.test(entity.getName());
         }).forEach(entity => {
             renderBeaconBeam(entity.getX(), 0, entity.getZ(), 0.5, 0, 0.5, 1, false, 300);
             renderBeaconBeam(entity.getX(), entity.getY(), entity.getZ(), 1, 0.5, 1, 1, false, 300);
         });
+    }
+});
+
+// Efficient Miner Max Notification
+let default_mf = -1;
+register("chat", () => {
+    if (settings().enableManiacMinerNotice) {
+        let tab_lines = TabList.getNames();
+        tab_lines.forEach(tab_line => {
+            let match = tab_line.toString().match(/^§r Mining Fortune: §r§6☘(\d+)§r$/);
+            if(match){
+                default_mf = Number(match[1]);
+            }
+        });
+        console.log(`Maniac Miner is activated! (MF: ${default_mf})`);
+    }
+}).setCriteria("&r&aYou used your &r&6Maniac Miner &r&aPickaxe Ability!&r");
+
+register("chat", () => {
+    if (settings().enableManiacMinerNotice) {
+        default_mf = -1;
+    }
+}).setCriteria("&r&cYour Maniac Miner has expired!&r");
+
+register('step', () => {
+    if (settings().enableManiacMinerNotice && default_mf !== -1) {
+        let tab_lines = TabList.getNames();
+        let current_mf = -1;
+        tab_lines.forEach(tab_line => {
+            let match = tab_line.toString().match(/^§r Mining Fortune: §r§6☘(\d+)§r$/);
+            if(match){
+                current_mf = Number(match[1]);
+            }
+        });
+        if(current_mf >= default_mf + 1000){
+            Client.showTitle("§aFully Charged!", "", 0, 50, 10);
+            World.playSound("random.orb", 1, 1);
+            default_mf = -1;
+            console.log(`Maniac Miner is fully charged! (MF: ${current_mf})`);
+        }
     }
 });
 
@@ -334,9 +373,27 @@ register("command", (args) => {
         sc_lines.forEach(sc_line => {
             console.log(sc_line);
         });
-        console.log("-------------------");
+        console.log("--------------------");
     }
 }).setName("megsc");
+
+register("command", (args) => {
+    if (settings().enableShowScoreCommand) {
+        ChatLib.chat("Printing tablist text...");
+        let tab_lines = TabList.getNames();
+        console.log("------TabList-------");
+        tab_lines.forEach(tab_line => {
+            console.log(tab_line);
+        });
+        console.log("-------Header-------");
+        let header = TabList.getHeader();
+        console.log(header);
+        console.log("-------Footer-------");
+        let footer = TabList.getFooter();
+        console.log(footer);
+        console.log("--------------------");
+    }
+}).setName("megtab");
 
 
 // ----- Rift -----
