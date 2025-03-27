@@ -120,7 +120,7 @@ register("chat", (rank, name, message) => {
         }
     }
     if (settings().enableTransfer) {
-        if (message.toLowerCase().endsWith(`!transfer`)) {
+        if (message.toLowerCase().endsWith(`!transfer`) || message.toLowerCase().endsWith(`!ptme`)) {
             ChatLib.command(`p transfer ${name}`);
         }
         if (message.toLowerCase().endsWith(`!promote`)) {
@@ -341,6 +341,7 @@ register('step', () => {
             }
         });
         if(current_mf >= default_mf + 1000){
+            
             Client.showTitle("§aFully Charged!", "", 0, 50, 10);
             World.playSound("random.orb", 1, 1);
             default_mf = -1;

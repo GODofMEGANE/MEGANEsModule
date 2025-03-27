@@ -27,7 +27,7 @@ default_config.addSwitch({
     category: null,
     configName: "enableTransfer",
     title: "Enable transfer by member",
-    description: "Send \'!transfer\' in party chat to transfer",
+    description: "Send \'!transfer\' or \'!ptme\' in party chat to transfer",
 }).addSwitch({
     category: null,
     configName: "enablePartyInvite",
