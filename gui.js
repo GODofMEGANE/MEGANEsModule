@@ -99,6 +99,11 @@ default_config.addSwitch({
     title: "Enable Maniac Miner notification",
     description: "Enable notification when Maniac Miner is fully charged",
 }).addSwitch({
+    category: null,
+    configName: "enableGfsRope",
+    title: "Enable showing GFS rope in chat",
+    description: "Enable showing get ascention rope button in chat when you are freezing",
+}).addSwitch({
     category: "Developments",
     configName: "enableShowScoreCommand",
     title: "Enable /megsc",

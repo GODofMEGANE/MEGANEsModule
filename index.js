@@ -350,6 +350,14 @@ register('step', () => {
     }
 });
 
+// gfs ascension_rope
+register("chat", () => {
+    if (settings().enableGfsRope) {
+        const ascensionrope_message = new Message(new TextComponent("§r[§r§9GET THE ASCENSION ROPE FROM YOUR SACKS§r]").setClick("run_command", "/gfs ascension_rope 1").setHoverValue("/gfs ascension_rope 1"));
+        ChatLib.chat(ascensionrope_message);
+    }
+}).setCriteria("&r&9&lBRRR! &r&bYou're freezing! All you can think about is getting out of here to a warm campfire...&r");
+
 // Server Memories
 let servers = [];
 register("chat", (server) => {
